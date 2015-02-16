@@ -3,5 +3,6 @@
 
     <string name="app_name">Journal Studio</string>
     <string name="action_settings">Settings</string>
+    <string name="user_message_error_adding_note">Problems creating note - Contact support</string>
 
 </resources>
