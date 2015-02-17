@@ -40,11 +40,51 @@ public class NoteAdapter extends ArrayAdapter<JournalNote> {
         }
     }
 
+    private void deleteNoteFromDB(JournalNote note) {
+        try {
+            Dao<JournalNote, Integer> noteDao = mDBHelper.getNoteDao();
+            noteDao.delete(note);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateNoteInDB(JournalNote note) {
+        try {
+            Dao<JournalNote, Integer> noteDao = mDBHelper.getNoteDao();
+            noteDao.update(note);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void add(JournalNote note) {
         super.add(note);
 
         addNoteToDB(note);
+    }
+
+    @Override
+    public void insert(JournalNote note, int index) {
+        super.insert(note, index);
+
+        addNoteToDB(note);
+    }
+
+    @Override
+    public void remove(JournalNote note) {
+        super.remove(note);
+
+        deleteNoteFromDB(note);
+    }
+
+    public void update(JournalNote oldNote, JournalNote newNote) {
+        int pos = getPosition(oldNote);
+        super.remove(oldNote);
+        super.insert(newNote, pos);
+
+        updateNoteInDB(newNote);
     }
 
 }
