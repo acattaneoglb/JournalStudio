@@ -21,12 +21,14 @@ public class NoteAdapter extends ArrayAdapter<JournalNote> {
 
     Context mContext;
     DatabaseHelper mDBHelper;
+    List<JournalNote> notesList;
 
     public NoteAdapter(Context context, DatabaseHelper dbHelper, List<JournalNote> notesList) {
         super(context, R.layout.note_entry, R.id.text_view_item_note_title, notesList);
 
         mContext = context;
         mDBHelper = dbHelper;
+        this.notesList = notesList;
     }
 
     private void addNoteToDB(JournalNote note) {
@@ -78,6 +80,7 @@ public class NoteAdapter extends ArrayAdapter<JournalNote> {
 
         deleteNoteFromDB(note);
     }
+
 
     public void update(JournalNote oldNote, JournalNote newNote) {
         int pos = getPosition(oldNote);

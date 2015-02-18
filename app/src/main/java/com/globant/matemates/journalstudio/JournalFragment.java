@@ -1,6 +1,8 @@
 package com.globant.matemates.journalstudio;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
@@ -21,6 +23,9 @@ import java.util.List;
  * A placeholder fragment containing a simple view.
  */
 public class JournalFragment extends ListFragment {
+
+    private static final int REQUEST_CODE_NEW_NOTE = 1;
+    private static final int REQUEST_CODE_EDIT_NOTE = 2;
 
     NoteAdapter mAdapter;
     DatabaseHelper mDBHelper = null;
@@ -47,7 +52,8 @@ public class JournalFragment extends ListFragment {
         Intent i = new Intent(getActivity(), NoteDetailActivity.class);
         JournalNote selectedNote = mAdapter.getItem(position);
         i.putExtra(NoteDetailFragment.SELECTED_NOTE, selectedNote);
-        startActivity(i);
+        i.putExtra(NoteDetailFragment.CONTACT_POSITION, position);
+        startActivityForResult(i, REQUEST_CODE_EDIT_NOTE);
     }
 
     public DatabaseHelper getDBHelper() {
@@ -73,13 +79,33 @@ public class JournalFragment extends ListFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_new_note:
-                JournalNote note = new JournalNote();
-                note.setTitle("new note");
-                note.setText("nothing relevant");
-                mAdapter.add(note);
+                Intent i = new Intent(getActivity(), NoteDetailActivity.class);
+                startActivityForResult(i, REQUEST_CODE_NEW_NOTE);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_NEW_NOTE:
+                if (resultCode == Activity.RESULT_OK) {
+                    JournalNote newNote = data.getParcelableExtra(NoteDetailFragment.NEW_NOTE);
+                    mAdapter.add(newNote);
+                }
+                break;
+            case REQUEST_CODE_EDIT_NOTE:
+                if (resultCode == Activity.RESULT_OK) {
+                    int position = data.getIntExtra(NoteDetailFragment.CONTACT_POSITION, -1);
+                    Log.d("coso", "position en Result = " + position);
+                    if (position != -1) {
+                        mAdapter.remove(mAdapter.getItem(position));
+                    }
+                }
+                break;
         }
     }
 

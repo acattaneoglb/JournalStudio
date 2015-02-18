@@ -8,5 +8,13 @@
     <string name="title_activity_note_detail">NoteDetailActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_delete_note">Delete</string>
+    <string name="camera_button">Camera button</string>
+    <string name="button_modify">Modify</string>
+    <string name="button_add">Add</string>
+    <string name="note_image">note_image</string>
+    <string name="button_delete">Delete</string>
+    <string name="action_share_note">Share</string>
+    <string name="edit_text_text_hint">Text Body</string>
+    <string name="edit_text_title_hint">Title</string>
 
 </resources>

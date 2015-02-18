@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.globant.matemates.journalstudio.NoteDetailActivity">
     <item
-        android:id="@+id/action_delete_note"
-        android:title="@string/action_delete_note"
+        android:id="@+id/action_share_note"
+        android:title="@string/action_share_note"
         android:orderInCategory="100"
-        android:icon="@android:drawable/ic_menu_delete"
+        android:icon="@android:drawable/ic_menu_share"
         app:showAsAction="ifRoom" />
 </menu>

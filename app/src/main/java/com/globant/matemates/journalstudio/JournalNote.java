@@ -33,7 +33,7 @@ public class JournalNote implements Parcelable {
     @DatabaseField(columnName = IMAGE, dataType = DataType.BYTE_ARRAY)
     private byte[] mImage;
 
-    public JournalNote() {
+    public JournalNote(){
 
     }
 
