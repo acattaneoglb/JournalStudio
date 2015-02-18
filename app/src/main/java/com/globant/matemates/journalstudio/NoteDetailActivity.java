@@ -2,7 +2,6 @@ package com.globant.matemates.journalstudio;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 
 public class NoteDetailActivity extends ActionBarActivity {
@@ -15,7 +14,7 @@ public class NoteDetailActivity extends ActionBarActivity {
             NoteDetailFragment fragment;
             if (getIntent().hasExtra(NoteDetailFragment.SELECTED_NOTE)) {
                 JournalNote note = getIntent().getParcelableExtra(NoteDetailFragment.SELECTED_NOTE);
-                fragment = NoteDetailFragment.newInstance(note, getIntent().getIntExtra(NoteDetailFragment.CONTACT_POSITION, -1));
+                fragment = NoteDetailFragment.newInstance(note, getIntent().getIntExtra(NoteDetailFragment.NOTE_POSITION, -1));
             } else {
                 fragment = new NoteDetailFragment();
             }

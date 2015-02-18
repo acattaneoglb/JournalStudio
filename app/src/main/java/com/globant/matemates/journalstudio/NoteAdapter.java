@@ -63,7 +63,6 @@ public class NoteAdapter extends ArrayAdapter<JournalNote> {
     @Override
     public void add(JournalNote note) {
         super.add(note);
-
         addNoteToDB(note);
     }
 
@@ -82,12 +81,18 @@ public class NoteAdapter extends ArrayAdapter<JournalNote> {
     }
 
 
-    public void update(JournalNote oldNote, JournalNote newNote) {
-        int pos = getPosition(oldNote);
-        super.remove(oldNote);
-        super.insert(newNote, pos);
+//    public void update(JournalNote oldNote, JournalNote newNote) {
+//        int pos = getPosition(oldNote);
+//        super.remove(oldNote);
+//        super.insert(newNote, pos);
+//
+//        updateNoteInDB(newNote);
+//    }
 
-        updateNoteInDB(newNote);
+    public void update(JournalNote note, int position) {
+        updateNoteInDB(note);
+        notesList.set(position, note);
+        notifyDataSetChanged();
     }
 
 }

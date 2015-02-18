@@ -38,6 +38,7 @@ public class JournalNote implements Parcelable {
     }
 
     public JournalNote(Parcel in) {
+        this.mId = in.readInt();
         this.setTitle(in.readString());
         this.setText(in.readString());
         this.setImage((Bitmap) in.readParcelable(getClass().getClassLoader()));
@@ -102,6 +103,7 @@ public class JournalNote implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel destination, int flags) {
+        destination.writeInt(mId);
         destination.writeString(this.getTitle());
         destination.writeString(this.getText());
         destination.writeParcelable(this.getImage(), flags);

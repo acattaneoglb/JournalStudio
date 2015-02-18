@@ -28,7 +28,11 @@ public class NoteDetailFragment extends Fragment {
 
     public static final String SELECTED_NOTE = "SELECTED_NOTE";
     public static final String NEW_NOTE = "NEW_NOTE";
-    public static final String CONTACT_POSITION = "CONTACT_POSITION";
+    public static final String NOTE_POSITION = "NOTE_POSITION";
+    public static final String MODIFY_NOTE = "MODIFY_NOTE";
+
+    public static final int RESULT_CODE_NEW_NOTE = 10;
+    public static final int RESULT_CODE_MODIFY_NOTE = 11;
 
     private static final int REQUEST_CODE_CAMERA = 1337;
 
@@ -37,12 +41,14 @@ public class NoteDetailFragment extends Fragment {
     Button mButtonModifyAdd, mButtonDelete;
     ImageButton mButtonCamera;
 
+    private JournalNote mSelectedNote;
+
     public NoteDetailFragment() {
     }
 
     public static NoteDetailFragment newInstance(JournalNote note, int position) {
         Bundle bundle = new Bundle();
-        bundle.putInt(CONTACT_POSITION, position);
+        bundle.putInt(NOTE_POSITION, position);
         bundle.putParcelable(SELECTED_NOTE, note);
         NoteDetailFragment fragment = new NoteDetailFragment();
         fragment.setArguments(bundle);
@@ -62,13 +68,14 @@ public class NoteDetailFragment extends Fragment {
 
     private void editOrAddNew(boolean isNew) {
         if (isNew) {
-            JournalNote note = getArguments().getParcelable(SELECTED_NOTE);
-            mNoteTitle.setText(note.getTitle());
-            mNoteText.setText(note.getText());
-            mNoteImage.setImageBitmap(note.getImage());
+            mSelectedNote = getArguments().getParcelable(SELECTED_NOTE);
+            mNoteTitle.setText(mSelectedNote.getTitle());
+            mNoteText.setText(mSelectedNote.getText());
+            mNoteImage.setImageBitmap(mSelectedNote.getImage());
             mButtonDelete.setVisibility(View.VISIBLE);
             mButtonModifyAdd.setText(getString(R.string.button_modify));
         } else {
+            mSelectedNote = null;
             mButtonDelete.setVisibility(View.GONE);
             mButtonModifyAdd.setText(getString(R.string.button_add));
         }
@@ -86,10 +93,21 @@ public class NoteDetailFragment extends Fragment {
                     note.setImage(noteImageBitmap);
                     Intent result = new Intent();
                     result.putExtra(NEW_NOTE, note);
-                    getActivity().setResult(Activity.RESULT_OK, result);
+                    getActivity().setResult(RESULT_CODE_NEW_NOTE, result);
                     getActivity().finish();
                 } else {
-
+                    if (mSelectedNote != null) {
+                        mSelectedNote.setTitle(mNoteTitle.getText().toString());
+                        mSelectedNote.setText(mNoteText.getText().toString());
+                        Bitmap noteImageBitmap = ((BitmapDrawable) mNoteImage.getDrawable()).getBitmap();
+                        mSelectedNote.setImage(noteImageBitmap);
+                        Intent result = new Intent();
+                        result.putExtra(MODIFY_NOTE, mSelectedNote);
+                        Log.d("coso",mSelectedNote.getText());
+                        getActivity().setResult(RESULT_CODE_MODIFY_NOTE, result);
+                        result.putExtra(NOTE_POSITION, getArguments().getInt(NOTE_POSITION));
+                        getActivity().finish();
+                    }
                 }
             }
         });
@@ -99,11 +117,10 @@ public class NoteDetailFragment extends Fragment {
         mButtonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position = getArguments().getInt(CONTACT_POSITION);
-                Log.d("coso", "position en NoteDetailFragment = " + position);
+                int position = getArguments().getInt(NOTE_POSITION);
                 if (position != -1) {
                     Intent result = new Intent();
-                    result.putExtra(CONTACT_POSITION, getArguments().getInt(CONTACT_POSITION));
+                    result.putExtra(NOTE_POSITION, getArguments().getInt(NOTE_POSITION));
                     getActivity().setResult(Activity.RESULT_OK, result);
                     getActivity().finish();
                 }
