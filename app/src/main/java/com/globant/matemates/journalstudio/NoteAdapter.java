@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * Adapter for the note class.
- *
+ * <p/>
  * Created by ariel.cattaneo on 16/02/2015.
  */
 public class NoteAdapter extends ArrayAdapter<JournalNote> {
@@ -23,7 +23,7 @@ public class NoteAdapter extends ArrayAdapter<JournalNote> {
     DatabaseHelper mDBHelper;
 
     public NoteAdapter(Context context, DatabaseHelper dbHelper, List<JournalNote> notesList) {
-        super(context, R.layout.note_entry, notesList);
+        super(context, R.layout.note_entry, R.id.text_view_item_note_title, notesList);
 
         mContext = context;
         mDBHelper = dbHelper;
