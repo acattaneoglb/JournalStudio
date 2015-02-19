@@ -48,7 +48,6 @@
             android:id="@+id/note_image"
             android:layout_width="0dp"
             android:layout_height="150dp"
-            android:src="@drawable/ic_contact_picture"
             android:contentDescription="@string/note_image"
             android:layout_weight="1" />
 

@@ -131,6 +131,9 @@ public class NoteDetailFragment extends Fragment {
             mSelectedNote = null;
             mButtonDelete.setVisibility(View.GONE);
             mButtonModifyAdd.setText(getString(R.string.button_add));
+            mNoteImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_contact_picture));
+            Bitmap noteImageBitmap = ((BitmapDrawable) mNoteImage.getDrawable()).getBitmap();
+            mImageShared = noteImageBitmap;
         }
     }
 
