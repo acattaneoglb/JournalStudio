@@ -22,5 +22,7 @@
     <string name="error_notestore_create">Error creating notestore</string>
     <string name="warning_empty_content">Content empty</string>
     <string name="error_note_create_linked_notebook">Error creating linked notestore</string>
+    <string name="action_login">Login</string>
+    <string name="action_share_note_warning">You should be logged in</string>
 
 </resources>

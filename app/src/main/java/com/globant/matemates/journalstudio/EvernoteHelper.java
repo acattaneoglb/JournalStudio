@@ -28,13 +28,12 @@ import java.util.List;
  */
 public class EvernoteHelper {
 
-    private static final String CONSUMER_KEY = "app791";
-    private static final String CONSUMER_SECRET = "47dd457bf08c50da";
+    public static final String CONSUMER_KEY = "app791";
+    public static final String CONSUMER_SECRET = "47dd457bf08c50da";
+    public static final EvernoteSession.EvernoteService EVERNOTE_SERVICE = EvernoteSession.EvernoteService.SANDBOX;
     private static final String LOGTAG = EvernoteHelper.class.getSimpleName();
-    private static final EvernoteSession.EvernoteService EVERNOTE_SERVICE = EvernoteSession.EvernoteService.SANDBOX;
     protected final int DIALOG_PROGRESS = 101;
 
-    private EvernoteSession mEvernoteSession;
     private Context mContext;
     private ActionBarActivity mActivity;
     private String mSelectedNotebookGuid;
@@ -57,17 +56,16 @@ public class EvernoteHelper {
     public EvernoteHelper(Context context, ActionBarActivity activity){
         mContext = context;
         mActivity = activity;
-        mEvernoteSession = EvernoteSession.getInstance(context, CONSUMER_KEY, CONSUMER_SECRET, EVERNOTE_SERVICE, true);
     }
 
-    private void selectNotebook() {
-        if(mEvernoteSession.isAppLinkedNotebook()) {
+    public void selectNotebook(EvernoteSession session, String title, String content, byte[] imageByte) {
+        if(session.isAppLinkedNotebook()) {
             Toast.makeText(mContext, mContext.getString(R.string.error_notebooks_list), Toast.LENGTH_LONG).show();
             return;
         }
 
         try {
-            mEvernoteSession.getClientFactory().createNoteStoreClient().listNotebooks(new OnClientCallback<List<Notebook>>() {
+            session.getClientFactory().createNoteStoreClient().listNotebooks(new OnClientCallback<List<Notebook>>() {
                 int mSelectedPos = -1;
 
                 @Override
@@ -112,6 +110,7 @@ public class EvernoteHelper {
                     mActivity.removeDialog(DIALOG_PROGRESS);
                 }
             });
+            saveNote(session, title, content, imageByte);
         } catch (TTransportException exception) {
             Log.e(LOGTAG, mContext.getString(R.string.error_notestore_create), exception);
             Toast.makeText(mContext, mContext.getString(R.string.error_notestore_create), Toast.LENGTH_LONG).show();
@@ -119,7 +118,7 @@ public class EvernoteHelper {
         }
     }
 
-    public void saveNote(String title, String content, byte[] imageByte) {
+    public void saveNote(EvernoteSession session, String title, String content, byte[] imageByte) {
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(content)) {
             Toast.makeText(mContext, mContext.getString(R.string.warning_empty_content), Toast.LENGTH_LONG).show();
             return;
@@ -149,27 +148,27 @@ public class EvernoteHelper {
 
         note.setContent(noteBody);
 
-        if(!mEvernoteSession.getAuthenticationResult().isAppLinkedNotebook()) {
+        if(!session.getAuthenticationResult().isAppLinkedNotebook()) {
             //If User has selected a notebook guid, assign it now
             if (!TextUtils.isEmpty(mSelectedNotebookGuid)) {
                 note.setNotebookGuid(mSelectedNotebookGuid);
             }
             mActivity.showDialog(DIALOG_PROGRESS);
             try {
-                mEvernoteSession.getClientFactory().createNoteStoreClient().createNote(note, mNoteCreateCallback);
+                session.getClientFactory().createNoteStoreClient().createNote(note, mNoteCreateCallback);
             } catch (TTransportException exception) {
                 Log.e(LOGTAG, mContext.getString(R.string.error_notestore_create), exception);
                 Toast.makeText(mContext, mContext.getString(R.string.error_notestore_create), Toast.LENGTH_LONG).show();
                 mActivity.removeDialog(DIALOG_PROGRESS);
             }
         } else {
-            createNoteInAppLinkedNotebook(note, mNoteCreateCallback);
+            createNoteInAppLinkedNotebook(session, note, mNoteCreateCallback);
         }
     }
 
-    protected void createNoteInAppLinkedNotebook(final Note note, final OnClientCallback<Note> createNoteCallback) {
+    private void createNoteInAppLinkedNotebook(EvernoteSession session, final Note note, final OnClientCallback<Note> createNoteCallback) {
         mActivity.showDialog(DIALOG_PROGRESS);
-        invokeOnAppLinkedNotebook(new OnClientCallback<Pair<AsyncLinkedNoteStoreClient, LinkedNotebook>>() {
+        invokeOnAppLinkedNotebook(session, new OnClientCallback<Pair<AsyncLinkedNoteStoreClient, LinkedNotebook>>() {
             @Override
             public void onSuccess(final Pair<AsyncLinkedNoteStoreClient, LinkedNotebook> pair) {
                 // Rely on the callback to dismiss the dialog
@@ -185,10 +184,10 @@ public class EvernoteHelper {
         });
     }
 
-    protected void invokeOnAppLinkedNotebook(final OnClientCallback<Pair<AsyncLinkedNoteStoreClient, LinkedNotebook>> callback) {
+    private void invokeOnAppLinkedNotebook(final EvernoteSession session, final OnClientCallback<Pair<AsyncLinkedNoteStoreClient, LinkedNotebook>> callback) {
         try {
             // We need to get the one and only linked notebook
-            mEvernoteSession.getClientFactory().createNoteStoreClient().listLinkedNotebooks(new OnClientCallback<List<LinkedNotebook>>() {
+            session.getClientFactory().createNoteStoreClient().listLinkedNotebooks(new OnClientCallback<List<LinkedNotebook>>() {
                 @Override
                 public void onSuccess(List<LinkedNotebook> linkedNotebooks) {
                     // We should only have one linked notebook
@@ -197,7 +196,7 @@ public class EvernoteHelper {
                         callback.onException(new Exception("Not single linked notebook"));
                     } else {
                         final LinkedNotebook linkedNotebook = linkedNotebooks.get(0);
-                        mEvernoteSession.getClientFactory().createLinkedNoteStoreClientAsync(linkedNotebook, new OnClientCallback<AsyncLinkedNoteStoreClient>() {
+                        session.getClientFactory().createLinkedNoteStoreClientAsync(linkedNotebook, new OnClientCallback<AsyncLinkedNoteStoreClient>() {
                             @Override
                             public void onSuccess(AsyncLinkedNoteStoreClient asyncLinkedNoteStoreClient) {
                                 // Finally create the note in the linked notebook

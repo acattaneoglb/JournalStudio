@@ -8,4 +8,9 @@
         android:orderInCategory="100"
         android:icon="@android:drawable/ic_menu_share"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_login"
+        android:title="@string/action_login"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom" />
 </menu>
