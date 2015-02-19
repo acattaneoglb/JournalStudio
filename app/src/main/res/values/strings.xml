@@ -16,5 +16,11 @@
     <string name="action_share_note">Share</string>
     <string name="edit_text_text_hint">Text Body</string>
     <string name="edit_text_title_hint">Title</string>
+    <string name="notification_note_saved">The note has been saved</string>
+    <string name="notification_note_failed">Error saving note</string>
+    <string name="error_notebooks_list">Error listing notebooks</string>
+    <string name="error_notestore_create">Error creating notestore</string>
+    <string name="warning_empty_content">Content empty</string>
+    <string name="error_note_create_linked_notebook">Error creating linked notestore</string>
 
 </resources>
