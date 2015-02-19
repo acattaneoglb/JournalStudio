@@ -58,7 +58,7 @@ public class EvernoteHelper {
         mActivity = activity;
     }
 
-    public void selectNotebook(EvernoteSession session, String title, String content, byte[] imageByte) {
+    public void selectNotebook(final EvernoteSession session, final String title, final String content, final byte[] imageByte) {
         if(session.isAppLinkedNotebook()) {
             Toast.makeText(mContext, mContext.getString(R.string.error_notebooks_list), Toast.LENGTH_LONG).show();
             return;
@@ -95,6 +95,7 @@ public class EvernoteHelper {
                                 public void onClick(DialogInterface dialog, int which) {
                                     if (mSelectedPos > -1) {
                                         mSelectedNotebookGuid = notebooks.get(mSelectedPos).getGuid();
+                                        saveNote(session, title, content, imageByte);
                                     }
                                     dialog.dismiss();
                                 }
@@ -110,7 +111,6 @@ public class EvernoteHelper {
                     mActivity.removeDialog(DIALOG_PROGRESS);
                 }
             });
-            saveNote(session, title, content, imageByte);
         } catch (TTransportException exception) {
             Log.e(LOGTAG, mContext.getString(R.string.error_notestore_create), exception);
             Toast.makeText(mContext, mContext.getString(R.string.error_notestore_create), Toast.LENGTH_LONG).show();
