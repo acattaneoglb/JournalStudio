@@ -66,7 +66,8 @@
                     android:id="@+id/button_modify_add"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/button_modify" />
+                    android:text="@string/button_modify"
+                    android:enabled="false"/>
 
                 <Button
                     android:id="@+id/button_delete"
