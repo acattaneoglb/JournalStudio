@@ -87,6 +87,7 @@ public class JournalFragment extends ListFragment {
             case R.id.action_settings:
                 Intent intent = new Intent(getActivity(), SettingsActivity.class);
                 startActivity(intent);
+                getActivity().finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

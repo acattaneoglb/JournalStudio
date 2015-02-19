@@ -55,4 +55,12 @@ public class SettingsActivity extends CustomActivity {
                 .replace(R.id.settings, new AppSettingsFragment()).commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(getBaseContext(), JournalActivity.class);
+        startActivity(intent);
+        SettingsActivity.this.finish();
+    }
+
 }
