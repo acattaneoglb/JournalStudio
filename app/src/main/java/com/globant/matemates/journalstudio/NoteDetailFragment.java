@@ -9,6 +9,9 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,6 +39,7 @@ public class NoteDetailFragment extends Fragment {
     public static final String NEW_NOTE = "NEW_NOTE";
     public static final String NOTE_POSITION = "NOTE_POSITION";
     public static final String MODIFY_NOTE = "MODIFY_NOTE";
+    public static final String NOTE_PICTURE = "NOTE_PICTURE";
 
     public static final int RESULT_CODE_NEW_NOTE = 10;
     public static final int RESULT_CODE_MODIFY_NOTE = 11;
@@ -68,12 +72,43 @@ public class NoteDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_note_detail, container, false);
         init(rootView);
+        prepareTextListener();
         editOrAddNew(getArguments() != null);
         addModifyButton();
         cameraButton();
         deleteButton();
         prepareEvernoteHandler();
+        if (savedInstanceState!=null){
+            mImageShared = savedInstanceState.getParcelable(NOTE_PICTURE);
+            mNoteImage.setImageBitmap(mImageShared);
+        }
         return rootView;
+    }
+
+    private void prepareTextListener() {
+        TextWatcher listener = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!TextUtils.isEmpty(mNoteTitle.getText().toString()) &&
+                        !TextUtils.isEmpty(mNoteText.getText().toString())){
+                    mButtonModifyAdd.setEnabled(true);
+                } else {
+                    mButtonModifyAdd.setEnabled(false);
+                }
+            }
+        };
+        mNoteTitle.addTextChangedListener(listener);
+        mNoteText.addTextChangedListener(listener);
     }
 
     private void prepareEvernoteHandler() {
@@ -211,13 +246,17 @@ public class NoteDetailFragment extends Fragment {
     private void shareNoteOnEvernote() {
         evernoteHelper.selectNotebook(mEvernoteSession, mNoteTitle.getText().toString(), mNoteText.getText().toString(),
                 convertBitmapImageToByteArray(mImageShared));
-//        evernoteHelper.saveNote(mEvernoteSession, mNoteTitle.getText().toString(), mNoteText.getText().toString(),
-//                convertBitmapImageToByteArray(mImageShared));
     }
 
     private byte[] convertBitmapImageToByteArray(Bitmap image) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(NOTE_PICTURE,mImageShared);
     }
 }
