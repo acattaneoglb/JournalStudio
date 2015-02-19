@@ -23,6 +23,8 @@ import java.util.List;
  */
 public class JournalFragment extends ListFragment {
 
+    public static final String TAG = "JOURNAL_FRAGMENT";
+
     private static final int REQUEST_CODE_NEW_NOTE = 1;
     private static final int REQUEST_CODE_DELETE_OR_MODIFY_NOTE = 2;
 
@@ -81,6 +83,10 @@ public class JournalFragment extends ListFragment {
             case R.id.action_new_note:
                 Intent i = new Intent(getActivity(), NoteDetailActivity.class);
                 startActivityForResult(i, REQUEST_CODE_NEW_NOTE);
+                return true;
+            case R.id.action_settings:
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

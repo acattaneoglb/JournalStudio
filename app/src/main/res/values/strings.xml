@@ -24,5 +24,17 @@
     <string name="error_note_create_linked_notebook">Error creating linked notestore</string>
     <string name="action_login">Login</string>
     <string name="action_share_note_warning">You should be logged in</string>
+    <string name="pref_theme_title">Theme</string>
+    <string name="pref_theme_summary">Stylize your app</string>
+    <string name="def">Default</string>
+    <string name="hot">Hot</string>
+    <string name="cold">Cold</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string-array name="theme_options">
+        <item>@string/def</item>
+        <item>@string/hot</item>
+        <item>@string/cold</item>
+    </string-array>
 
 </resources>

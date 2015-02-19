@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class JournalActivity extends ActionBarActivity {
+public class JournalActivity extends CustomActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,7 +14,7 @@ public class JournalActivity extends ActionBarActivity {
         setContentView(R.layout.activity_journal);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new JournalFragment())
+                    .add(R.id.container, new JournalFragment(), JournalFragment.TAG)
                     .commit();
         }
     }

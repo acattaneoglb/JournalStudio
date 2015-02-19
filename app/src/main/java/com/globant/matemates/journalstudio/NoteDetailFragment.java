@@ -31,6 +31,7 @@ import java.io.ByteArrayOutputStream;
  */
 public class NoteDetailFragment extends Fragment {
 
+    public static final String TAG = "NOTE_DETAIL_FRAGMENT";
     public static final String SELECTED_NOTE = "SELECTED_NOTE";
     public static final String NEW_NOTE = "NEW_NOTE";
     public static final String NOTE_POSITION = "NOTE_POSITION";
