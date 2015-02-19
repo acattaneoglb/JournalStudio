@@ -75,15 +75,7 @@ public class JournalNote implements Parcelable {
 
     @Override
     public String toString() {
-        String string = "";
-
-        string += mTitle;
-
-        // TODO: Add part of the text
-
-        string += (mImage != null) ? " (with image)" : "";
-
-        return string;
+        return mTitle;
     }
 
     private byte[] bitmapToByteArray(Bitmap bmp) {

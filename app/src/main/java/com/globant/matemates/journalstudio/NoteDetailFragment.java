@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -177,6 +178,12 @@ public class NoteDetailFragment extends Fragment {
         mButtonCamera = (ImageButton) rootView.findViewById(R.id.button_camera);
         mButtonDelete = (Button) rootView.findViewById(R.id.button_delete);
         mButtonModifyAdd = (Button) rootView.findViewById(R.id.button_modify_add);
+
+        Drawable buttonTheme = ((CustomActivity)getActivity()).getButtonTheme();
+        if (buttonTheme != null) {
+            mButtonDelete.setBackgroundDrawable(buttonTheme);
+            mButtonModifyAdd.setBackgroundDrawable(buttonTheme);
+        }
     }
 
     @Override
