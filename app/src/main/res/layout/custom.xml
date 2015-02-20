@@ -23,7 +23,7 @@
             style="?android:buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:id="@+id/button_cancel"
             android:layout_weight="1" />
 
@@ -31,7 +31,7 @@
             style="?android:buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Delete"
+            android:text="@string/delete"
             android:id="@+id/button_delete"
             android:textColor="@android:color/holo_red_light"
             android:layout_weight="1" />

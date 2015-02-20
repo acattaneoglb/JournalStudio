@@ -19,6 +19,7 @@ import android.text.Editable;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -186,7 +187,7 @@ public class NoteDetailFragment extends Fragment {
                         mImageShared = noteImageBitmap;
                         Intent result = new Intent();
                         result.putExtra(MODIFY_NOTE, mSelectedNote);
-                        Log.d("coso",mSelectedNote.getText());
+                        Log.d("coso", mSelectedNote.getText());
                         getActivity().setResult(RESULT_CODE_MODIFY_NOTE, result);
                         result.putExtra(NOTE_POSITION, getArguments().getInt(NOTE_POSITION));
                         getActivity().finish();
@@ -327,8 +328,6 @@ public class NoteDetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(NOTE_PICTURE, mImageShared);
-        outState.putBoolean(NOTE_READY, mReadyToShare);
         outState.putParcelable(NOTE_PICTURE, mImageShared);
         outState.putBoolean(NOTE_READY, mReadyToShare);
         outState.putBoolean(NOTE_PHOTO_TAKEN, mPhotoTaken);
