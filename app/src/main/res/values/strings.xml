@@ -32,6 +32,7 @@
     <string name="spring">Spring</string>
     <string name="fall">Fall</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="action_share_note_incomplete">Title and Content should be completed</string>
 
     <string-array name="theme_options">
         <item>@string/def</item>

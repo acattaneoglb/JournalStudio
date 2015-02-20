@@ -3,6 +3,8 @@ package com.globant.matemates.journalstudio;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +22,7 @@ import com.evernote.edam.type.Notebook;
 import com.evernote.edam.type.Resource;
 import com.evernote.thrift.transport.TTransportException;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +31,8 @@ import java.util.List;
  */
 public class EvernoteHelper {
 
-    public static final String CONSUMER_KEY = "app791";
-    public static final String CONSUMER_SECRET = "47dd457bf08c50da";
+    public static final String CONSUMER_KEY = "app840";
+    public static final String CONSUMER_SECRET = "772fb2669132ed50";
     public static final EvernoteSession.EvernoteService EVERNOTE_SERVICE = EvernoteSession.EvernoteService.SANDBOX;
     private static final String LOGTAG = EvernoteHelper.class.getSimpleName();
     protected final int DIALOG_PROGRESS = 101;
@@ -119,10 +122,7 @@ public class EvernoteHelper {
     }
 
     public void saveNote(EvernoteSession session, String title, String content, byte[] imageByte) {
-        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(content)) {
-            Toast.makeText(mContext, mContext.getString(R.string.warning_empty_content), Toast.LENGTH_LONG).show();
-            return;
-        }
+        String tag;
 
         Note note = new Note();
         note.setTitle(title);
@@ -137,7 +137,7 @@ public class EvernoteHelper {
         resource.setMime("image/png");
         resource.setData(data);
 
-        String tag = EvernoteUtil.createEnMediaTag(resource);
+        tag = EvernoteUtil.createEnMediaTag(resource);
 
         List<Resource> resourceList = new ArrayList<>();
         resourceList.add(resource);

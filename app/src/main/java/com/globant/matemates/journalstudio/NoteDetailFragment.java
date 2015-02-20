@@ -41,6 +41,7 @@ public class NoteDetailFragment extends Fragment {
     public static final String NOTE_POSITION = "NOTE_POSITION";
     public static final String MODIFY_NOTE = "MODIFY_NOTE";
     public static final String NOTE_PICTURE = "NOTE_PICTURE";
+    public static final String NOTE_READY = "NOTE_READY";
 
     public static final int RESULT_CODE_NEW_NOTE = 10;
     public static final int RESULT_CODE_MODIFY_NOTE = 11;
@@ -56,6 +57,7 @@ public class NoteDetailFragment extends Fragment {
     private JournalNote mSelectedNote;
     private EvernoteSession mEvernoteSession;
     private EvernoteHelper evernoteHelper;
+    private Boolean mReadyToShare;
 
     public NoteDetailFragment() {
     }
@@ -82,6 +84,7 @@ public class NoteDetailFragment extends Fragment {
         if (savedInstanceState!=null){
             mImageShared = savedInstanceState.getParcelable(NOTE_PICTURE);
             mNoteImage.setImageBitmap(mImageShared);
+            mReadyToShare = savedInstanceState.getBoolean(NOTE_READY);
         }
         return rootView;
     }
@@ -103,8 +106,10 @@ public class NoteDetailFragment extends Fragment {
                 if (!TextUtils.isEmpty(mNoteTitle.getText().toString()) &&
                         !TextUtils.isEmpty(mNoteText.getText().toString())){
                     mButtonModifyAdd.setEnabled(true);
+                    mReadyToShare = true;
                 } else {
                     mButtonModifyAdd.setEnabled(false);
+                    mReadyToShare = false;
                 }
             }
         };
@@ -222,6 +227,8 @@ public class NoteDetailFragment extends Fragment {
             mButtonDelete.setBackgroundDrawable(buttonTheme);
             mButtonModifyAdd.setBackgroundDrawable(buttonTheme);
         }
+
+        mReadyToShare = false;
     }
 
     @Override
@@ -240,10 +247,14 @@ public class NoteDetailFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_share_note:
-                if (mEvernoteSession.isLoggedIn()) {
-                    shareNoteOnEvernote();
+                if (mReadyToShare) {
+                    if (mEvernoteSession.isLoggedIn()) {
+                        shareNoteOnEvernote();
+                    } else {
+                        Toast.makeText(getActivity(), getString(R.string.action_share_note_warning), Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(getActivity(), getString(R.string.action_share_note_warning), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.action_share_note_incomplete), Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case R.id.action_login:
@@ -268,5 +279,6 @@ public class NoteDetailFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(NOTE_PICTURE,mImageShared);
+        outState.putBoolean(NOTE_READY,mReadyToShare);
     }
 }
