@@ -3,6 +3,7 @@ package com.globant.matemates.journalstudio;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 
 
@@ -12,6 +13,9 @@ public class NoteDetailActivity extends CustomActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_detail);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setIcon(R.drawable.ic_launcher);
+        actionBar.setDisplayShowHomeEnabled(true);
         if (savedInstanceState == null) {
             NoteDetailFragment fragment;
             if (getIntent().hasExtra(NoteDetailFragment.SELECTED_NOTE)) {
