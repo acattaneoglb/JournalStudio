@@ -122,26 +122,28 @@ public class EvernoteHelper {
     }
 
     public void saveNote(EvernoteSession session, String title, String content, byte[] imageByte) {
-        String tag;
+        String tag = "";
 
         Note note = new Note();
         note.setTitle(title);
 
-        //TODO: Creating data
-        Data data = new Data();
-        data.setBodyHash(EvernoteUtil.hash(imageByte));
-        data.setBody(imageByte);
+        if (imageByte != null) {
+            //TODO: Creating data
+            Data data = new Data();
+            data.setBodyHash(EvernoteUtil.hash(imageByte));
+            data.setBody(imageByte);
 
-        //TODO: Creating resource
-        Resource resource = new Resource();
-        resource.setMime("image/png");
-        resource.setData(data);
+            //TODO: Creating resource
+            Resource resource = new Resource();
+            resource.setMime("image/png");
+            resource.setData(data);
 
-        tag = EvernoteUtil.createEnMediaTag(resource);
+            tag = EvernoteUtil.createEnMediaTag(resource);
 
-        List<Resource> resourceList = new ArrayList<>();
-        resourceList.add(resource);
-        note.setResources(resourceList);
+            List<Resource> resourceList = new ArrayList<>();
+            resourceList.add(resource);
+            note.setResources(resourceList);
+        }
 
         //TODO: line breaks need to be converted to render in ENML
         String noteBody = EvernoteUtil.NOTE_PREFIX + content + "<br/>" + tag + EvernoteUtil.NOTE_SUFFIX;

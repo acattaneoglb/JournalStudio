@@ -64,8 +64,11 @@ public class JournalNote implements Parcelable {
         try {
             return byteArrayToBitmap(mImage);
         } catch (Exception e) {
+            return null;
+/*
             Bitmap.Config conf = Bitmap.Config.ARGB_8888;
             return Bitmap.createBitmap(100, 100, conf);
+*/
         }
     }
 
@@ -79,9 +82,12 @@ public class JournalNote implements Parcelable {
     }
 
     private byte[] bitmapToByteArray(Bitmap bmp) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
+        if (bmp != null) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            return stream.toByteArray();
+        }
+        return null;
     }
 
     private Bitmap byteArrayToBitmap(byte[] array) {

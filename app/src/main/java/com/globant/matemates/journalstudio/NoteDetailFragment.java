@@ -42,6 +42,7 @@ public class NoteDetailFragment extends Fragment {
     public static final String MODIFY_NOTE = "MODIFY_NOTE";
     public static final String NOTE_PICTURE = "NOTE_PICTURE";
     public static final String NOTE_READY = "NOTE_READY";
+    public static final String NOTE_PHOTO_TAKEN = "NOTE_PHOTO_TAKEN";
 
     public static final int RESULT_CODE_NEW_NOTE = 10;
     public static final int RESULT_CODE_MODIFY_NOTE = 11;
@@ -58,6 +59,8 @@ public class NoteDetailFragment extends Fragment {
     private EvernoteSession mEvernoteSession;
     private EvernoteHelper evernoteHelper;
     private Boolean mReadyToShare;
+
+    private Boolean mPhotoTaken = false;
 
     public NoteDetailFragment() {
     }
@@ -85,6 +88,7 @@ public class NoteDetailFragment extends Fragment {
             mImageShared = savedInstanceState.getParcelable(NOTE_PICTURE);
             mNoteImage.setImageBitmap(mImageShared);
             mReadyToShare = savedInstanceState.getBoolean(NOTE_READY);
+            mPhotoTaken = savedInstanceState.getBoolean(NOTE_PHOTO_TAKEN);
         }
         return rootView;
     }
@@ -128,7 +132,14 @@ public class NoteDetailFragment extends Fragment {
             mSelectedNote = getArguments().getParcelable(SELECTED_NOTE);
             mNoteTitle.setText(mSelectedNote.getTitle());
             mNoteText.setText(mSelectedNote.getText());
-            mNoteImage.setImageBitmap(mSelectedNote.getImage());
+            Bitmap picture = mSelectedNote.getImage();
+            if (picture == null) {
+                mNoteImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_contact_picture));
+            }
+            else {
+                mPhotoTaken = true;
+                mNoteImage.setImageBitmap(mSelectedNote.getImage());
+            }
             mImageShared = mSelectedNote.getImage();
             mButtonDelete.setVisibility(View.VISIBLE);
             mButtonModifyAdd.setText(getString(R.string.button_modify));
@@ -150,8 +161,10 @@ public class NoteDetailFragment extends Fragment {
                     JournalNote note = new JournalNote();
                     note.setTitle(mNoteTitle.getText().toString());
                     note.setText(mNoteText.getText().toString());
-                    Bitmap noteImageBitmap = ((BitmapDrawable) mNoteImage.getDrawable()).getBitmap();
-                    note.setImage(noteImageBitmap);
+                    if (mPhotoTaken) {
+                        Bitmap noteImageBitmap = ((BitmapDrawable) mNoteImage.getDrawable()).getBitmap();
+                        note.setImage(noteImageBitmap);
+                    }
                     Intent result = new Intent();
                     result.putExtra(NEW_NOTE, note);
                     getActivity().setResult(RESULT_CODE_NEW_NOTE, result);
@@ -160,9 +173,11 @@ public class NoteDetailFragment extends Fragment {
                     if (mSelectedNote != null) {
                         mSelectedNote.setTitle(mNoteTitle.getText().toString());
                         mSelectedNote.setText(mNoteText.getText().toString());
-                        Bitmap noteImageBitmap = ((BitmapDrawable) mNoteImage.getDrawable()).getBitmap();
-                        mSelectedNote.setImage(noteImageBitmap);
-                        mImageShared = noteImageBitmap;
+                        if (mPhotoTaken) {
+                            Bitmap noteImageBitmap = ((BitmapDrawable) mNoteImage.getDrawable()).getBitmap();
+                            mSelectedNote.setImage(noteImageBitmap);
+                            mImageShared = noteImageBitmap;
+                        }
                         Intent result = new Intent();
                         result.putExtra(MODIFY_NOTE, mSelectedNote);
                         Log.d("coso",mSelectedNote.getText());
@@ -206,6 +221,7 @@ public class NoteDetailFragment extends Fragment {
         switch (requestCode) {
             case REQUEST_CODE_CAMERA:
                 if (resultCode == Activity.RESULT_OK) {
+                    mPhotoTaken = true;
                     Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
                     mNoteImage.setImageBitmap(imageBitmap);
                     mImageShared = imageBitmap;
@@ -265,20 +281,30 @@ public class NoteDetailFragment extends Fragment {
     }
 
     private void shareNoteOnEvernote() {
-        evernoteHelper.selectNotebook(mEvernoteSession, mNoteTitle.getText().toString(), mNoteText.getText().toString(),
-                convertBitmapImageToByteArray(mImageShared));
+        if (mPhotoTaken) {
+            evernoteHelper.selectNotebook(mEvernoteSession, mNoteTitle.getText().toString(), mNoteText.getText().toString(),
+                    convertBitmapImageToByteArray(mImageShared));
+        }
+        else {
+            evernoteHelper.selectNotebook(mEvernoteSession, mNoteTitle.getText().toString(), mNoteText.getText().toString(),
+                    null);
+        }
     }
 
     private byte[] convertBitmapImageToByteArray(Bitmap image) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
+        if (image != null) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            return stream.toByteArray();
+        }
+        return null;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(NOTE_PICTURE,mImageShared);
-        outState.putBoolean(NOTE_READY,mReadyToShare);
+        outState.putParcelable(NOTE_PICTURE, mImageShared);
+        outState.putBoolean(NOTE_READY, mReadyToShare);
+        outState.putBoolean(NOTE_PHOTO_TAKEN, mPhotoTaken);
     }
 }
