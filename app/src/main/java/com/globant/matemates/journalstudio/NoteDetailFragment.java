@@ -1,19 +1,25 @@
 package com.globant.matemates.journalstudio;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +30,8 @@ import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.evernote.client.android.EvernoteSession;
@@ -81,7 +89,7 @@ public class NoteDetailFragment extends Fragment {
         cameraButton();
         deleteButton();
         prepareEvernoteHandler();
-        if (savedInstanceState!=null){
+        if (savedInstanceState != null) {
             mImageShared = savedInstanceState.getParcelable(NOTE_PICTURE);
             mNoteImage.setImageBitmap(mImageShared);
             mReadyToShare = savedInstanceState.getBoolean(NOTE_READY);
@@ -104,7 +112,7 @@ public class NoteDetailFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 if (!TextUtils.isEmpty(mNoteTitle.getText().toString()) &&
-                        !TextUtils.isEmpty(mNoteText.getText().toString())){
+                        !TextUtils.isEmpty(mNoteText.getText().toString())) {
                     mButtonModifyAdd.setEnabled(true);
                     mReadyToShare = true;
                 } else {
@@ -165,7 +173,6 @@ public class NoteDetailFragment extends Fragment {
                         mImageShared = noteImageBitmap;
                         Intent result = new Intent();
                         result.putExtra(MODIFY_NOTE, mSelectedNote);
-                        Log.d("coso",mSelectedNote.getText());
                         getActivity().setResult(RESULT_CODE_MODIFY_NOTE, result);
                         result.putExtra(NOTE_POSITION, getArguments().getInt(NOTE_POSITION));
                         getActivity().finish();
@@ -177,15 +184,33 @@ public class NoteDetailFragment extends Fragment {
 
     private void deleteButton() {
         mButtonDelete.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                int position = getArguments().getInt(NOTE_POSITION);
-                if (position != -1) {
-                    Intent result = new Intent();
-                    result.putExtra(NOTE_POSITION, getArguments().getInt(NOTE_POSITION));
-                    getActivity().setResult(Activity.RESULT_OK, result);
-                    getActivity().finish();
-                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setView(R.layout.custom);
+                final AlertDialog dialog = builder.create();
+                dialog.show();
+                Button cancelButton = (Button) dialog.findViewById(R.id.button_cancel);
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                Button positiveButton = (Button) dialog.findViewById(R.id.button_delete);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int position = getArguments().getInt(NOTE_POSITION);
+                        if (position != -1) {
+                            Intent result = new Intent();
+                            result.putExtra(NOTE_POSITION, getArguments().getInt(NOTE_POSITION));
+                            getActivity().setResult(Activity.RESULT_OK, result);
+                            getActivity().finish();
+                        }
+                    }
+                });
             }
         });
     }
@@ -222,7 +247,7 @@ public class NoteDetailFragment extends Fragment {
         mButtonDelete = (Button) rootView.findViewById(R.id.button_delete);
         mButtonModifyAdd = (Button) rootView.findViewById(R.id.button_modify_add);
 
-        Drawable buttonTheme = ((CustomActivity)getActivity()).getButtonTheme();
+        Drawable buttonTheme = ((CustomActivity) getActivity()).getButtonTheme();
         if (buttonTheme != null) {
             mButtonDelete.setBackgroundDrawable(buttonTheme);
             mButtonModifyAdd.setBackgroundDrawable(buttonTheme);
@@ -278,7 +303,7 @@ public class NoteDetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(NOTE_PICTURE,mImageShared);
-        outState.putBoolean(NOTE_READY,mReadyToShare);
+        outState.putParcelable(NOTE_PICTURE, mImageShared);
+        outState.putBoolean(NOTE_READY, mReadyToShare);
     }
 }

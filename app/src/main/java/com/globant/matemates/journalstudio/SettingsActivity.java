@@ -31,6 +31,7 @@ public class SettingsActivity extends CustomActivity {
             if (isTheme(theme)) {
                 getActivity().finish();
                 getActivity().startActivity(new Intent(getActivity(), getActivity().getClass()));
+                getActivity().overridePendingTransition(0, 0);
             }
         }
 
@@ -60,6 +61,7 @@ public class SettingsActivity extends CustomActivity {
         super.onBackPressed();
         Intent intent = new Intent(getBaseContext(), JournalActivity.class);
         startActivity(intent);
+        overridePendingTransition(0, 0);
         SettingsActivity.this.finish();
     }
 
